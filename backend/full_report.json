@@ -1,0 +1,39 @@
+{
+  "summary": {
+    "total_invoices": 5,
+    "valid_invoices": 4,
+    "invalid_invoices": 1,
+    "error_counts": {
+      "business_rule_failed: totals_mismatch": 1
+    }
+  },
+  "results": [
+    {
+      "invoice_id": "AUFNR34343",
+      "is_valid": true,
+      "errors": []
+    },
+    {
+      "invoice_id": "AUFNR234953",
+      "is_valid": true,
+      "errors": []
+    },
+    {
+      "invoice_id": "AUFNR34869",
+      "is_valid": false,
+      "errors": [
+        "business_rule_failed: totals_mismatch"
+      ]
+    },
+    {
+      "invoice_id": "AUFNR123456",
+      "is_valid": true,
+      "errors": []
+    },
+    {
+      "invoice_id": "AUFNR89493",
+      "is_valid": true,
+      "errors": []
+    }
+  ]
+}

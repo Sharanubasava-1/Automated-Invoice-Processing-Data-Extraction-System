@@ -1,0 +1,113 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  /* Cyberpunk / Glassmorphism Palette */
+  --bg-primary: #0f0c29;
+  --bg-secondary: #302b63;
+  --bg-tertiary: #24243e;
+
+  --text-primary: #ffffff;
+  --text-secondary: #b3b3b3;
+
+  --accent-primary: #00f2ff;
+  /* Cyan */
+  --accent-secondary: #ff0055;
+  /* Neon Pink */
+  --accent-tertiary: #7000ff;
+  /* Purple */
+
+  --glass-bg: rgba(255, 255, 255, 0.05);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+
+  color-scheme: dark;
+  color: var(--text-primary);
+  background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary), var(--bg-tertiary));
+  background-attachment: fixed;
+  /* Full screen gradient */
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+  background: transparent;
+  /* Let root gradient show */
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--text-primary);
+  font-weight: 700;
+}
+
+a {
+  font-weight: 500;
+  color: var(--accent-primary);
+  text-decoration: inherit;
+  transition: color 0.3s ease;
+}
+
+a:hover {
+  color: var(--accent-secondary);
+  text-shadow: 0 0 8px var(--accent-secondary);
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid var(--glass-border);
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 600;
+  font-family: inherit;
+  background-color: var(--glass-bg);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(4px);
+}
+
+button:hover {
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 15px var(--accent-primary);
+  background-color: rgba(0, 242, 255, 0.1);
+}
+
+button:focus,
+button:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 4px;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--bg-secondary);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-tertiary);
+}
