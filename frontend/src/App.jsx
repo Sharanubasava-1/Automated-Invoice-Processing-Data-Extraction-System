@@ -2,6 +2,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import './App.css';
 import { PdfUploader } from './components/PdfUploader';
+import { supabase } from './supabaseClient';
 
 function App() {
   const [payload, setPayload] = useState('');
@@ -12,19 +13,43 @@ function App() {
   const [error, setError] = useState('');
 
   const handleValidate = async () => {
-    setLoading(true);
-    setError('');
-    try {
-      const invoices = JSON.parse(payload);
-      const res = await axios.post('http://localhost:8000/validate-json', invoices);
-      setResults(res.data.results);
-      setSummary(res.data.summary);
-    } catch (err) {
-      setError(err.response?.data?.detail || err.message || 'Failed to validate');
-    } finally {
-      setLoading(false);
+  setLoading(true);
+  setError('');
+
+  try {
+    const invoices = JSON.parse(payload);
+
+    const res = await axios.post(
+      'https://invoice-backend-gsce.onrender.com/validate-json',
+      invoices
+    );
+
+    setResults(res.data.results);
+    setSummary(res.data.summary);
+
+    // ✅ SAVE TO SUPABASE
+    const { error: supabaseError } = await supabase
+      .from('invoices')
+      .insert(
+        res.data.results.map(result => ({
+          invoice_id: result.invoice_id,
+          is_valid: result.is_valid,
+          errors: result.errors
+        }))
+      );
+
+    if (supabaseError) {
+      console.log("Supabase error:", supabaseError.message);
+    } else {
+      console.log("Saved to Supabase successfully ✅");
     }
-  };
+
+  } catch (err) {
+    setError(err.response?.data?.detail || err.message || 'Failed to validate');
+  } finally {
+    setLoading(false);
+  }
+};
 
   const handlePdfResult = (result) => {
     // Append the new result to the existing results
