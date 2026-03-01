@@ -17,9 +17,22 @@ from invoice_qc.extractor import extract_text_from_pdf, extract_invoice_from_tex
 
 app = FastAPI(title="Invoice QC Service", version="1.0.0")
 
+@app.get("/")
+def root():
+    return {
+        "message": "Invoice QC API is running",
+        "docs": "/docs",
+        "health": "/health"
+    }
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://localhost:5173", "http://localhost:5174"],
+    allow_origins=[
+        "http://localhost:3000",
+        "http://localhost:5173",
+        "http://localhost:5174",
+        "https://your-netlify-site.netlify.app"   # add your Netlify URL here
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
