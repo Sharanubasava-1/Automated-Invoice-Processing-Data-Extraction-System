@@ -1,12 +1,17 @@
 import { useState } from 'react';
 import axios from 'axios';
 
+const API_BASE = "https://invoice-backend-gsce.onrender.com";
+
 export function PdfUploader({ onValidationResult }) {
+
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
     const handleFileChange = async (e) => {
+
         const file = e.target.files[0];
+
         if (!file) return;
 
         setLoading(true);
@@ -16,53 +21,94 @@ export function PdfUploader({ onValidationResult }) {
         formData.append('file', file);
 
         try {
-            const res = await axios.post('http://localhost:8000/upload-pdf', formData, {
-                headers: { 'Content-Type': 'multipart/form-data' }
-            });
+
+            const res = await axios.post(
+                `${API_BASE}/upload-pdf`,
+                formData,
+                {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    },
+                    timeout: 60000
+                }
+            );
 
             const { is_valid, errors, invoice_data } = res.data;
 
             const resultForTable = {
+
                 invoice_id: invoice_data.invoice_number,
                 is_valid,
                 errors
+
             };
 
             onValidationResult(resultForTable);
 
         } catch (err) {
+
             console.error(err);
-            setError(err.response?.data?.detail || "Upload failed");
+
+            if (err.code === "ECONNABORTED") {
+
+                setError("Server is waking up. Try again in 10 seconds.");
+
+            } else if (err.response) {
+
+                setError(err.response.data?.detail || "Upload failed");
+
+            } else {
+
+                setError("Network error. Backend may be sleeping.");
+
+            }
+
         } finally {
+
             setLoading(false);
-            // Reset file input
+
             e.target.value = null;
+
         }
+
     };
 
     return (
-        <div className="pdf-uploader-section" style={{ marginBottom: '2rem', padding: '1.5rem', border: '2px dashed #ccc', borderRadius: '8px', backgroundColor: '#f9f9f9' }}>
-            <h3 style={{ marginTop: 0 }}>📄 Upload PDF Invoice</h3>
-            <p style={{ fontSize: '0.9rem', color: '#666', marginBottom: '1rem' }}>
-                Upload a PDF to extract invoice data and validate it immediately.
+
+        <div className="pdf-uploader-section"
+            style={{
+                marginBottom: '2rem',
+                padding: '1.5rem',
+                border: '2px dashed #ccc',
+                borderRadius: '8px',
+                backgroundColor: '#f9f9f9'
+            }}>
+
+            <h3>📄 Upload PDF Invoice</h3>
+
+            <p style={{ fontSize: '0.9rem', color: '#666' }}>
+                Upload PDF and validate instantly.
             </p>
 
-            <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-                <input
-                    type="file"
-                    accept=".pdf"
-                    onChange={handleFileChange}
-                    disabled={loading}
-                    style={{ padding: '0.5rem' }}
-                />
-                {loading && <span style={{ fontWeight: 'bold', color: '#0066cc' }}>⏳ Processing Invoice...</span>}
-            </div>
+            <input
+                type="file"
+                accept=".pdf"
+                onChange={handleFileChange}
+                disabled={loading}
+            />
+
+            {loading && (
+                <div>⏳ Processing Invoice...</div>
+            )}
 
             {error && (
-                <div className="error" style={{ marginTop: '1rem', padding: '0.5rem', backgroundColor: '#fee', color: '#c00', borderRadius: '4px' }}>
+                <div className="error">
                     ❌ {error}
                 </div>
             )}
+
         </div>
+
     );
+
 }
